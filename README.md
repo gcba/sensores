@@ -3,4 +3,4 @@ sensores
 
 #Librerías
 
-DHT https://github.com/adafruit/DHT-sensor-library
+[DHT](https://github.com/adafruit/DHT-sensor-library)
