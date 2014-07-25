@@ -41,9 +41,9 @@ char pageName[] = "/api/data/create?user=user1&pass=p4RmoU7q&timestamp=year()-mo
 EthernetClient client;
 
 // Params debe ser lo suficientemente grande para contener todas las variables
-int sizeArrayParams=3;
-int paramsBuffer=64;
-char params[3];
+const int sizeArrayParams=3;
+const int paramsBuffer=64;
+char params[sizeArrayParams];
 
 //char params[64];
 //char params2[64];
@@ -86,10 +86,11 @@ void loop()
     // Los parametros deben estar encondeados para la URL.
     
     //Signal 1
-    sprintf(params,"id=61&data=%i&datatype=temp1",temp1);
-    if(!postPage(serverName,serverPort,pageName,params)) Serial.print(F("Fail "));
+    sprintf(params[0],"id=61&data=%i&datatype=temp1",temp1);
+    if(!postPage(serverName,serverPort,pageName,params[0])) Serial.print(F("Fail "));
     else Serial.print(F("Pass "));
     
+    /*
     //Signal 2
     sprintf(params2,"id=61&data=%i&datatype=temp2",temp2);
     if(!postPage(serverName,serverPort,pageName,params2)) Serial.print(F("Fail "));
@@ -104,7 +105,7 @@ void loop()
     sprintf(params4,"id=61&data=%i&datatype=hum2",hum2);
     if(!postPage(serverName,serverPort,pageName,params4)) Serial.print(F("Fail "));
     else Serial.print(F("Pass "));
-    
+    */
 }
 
 /* Funcion:  postPage
