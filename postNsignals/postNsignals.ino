@@ -41,10 +41,14 @@ char pageName[] = "/api/data/create?user=user1&pass=p4RmoU7q&timestamp=year()-mo
 EthernetClient client;
 
 // Params debe ser lo suficientemente grande para contener todas las variables
-char params[64];
-char params2[64];
-char params3[64];
-char params4[64];
+int sizeArrayParams=3;
+int paramsBuffer=64;
+char params[3];
+
+//char params[64];
+//char params2[64];
+//char params3[64];
+//char params4[64];
 
 //=======================================================
 /// Set-Up inicial del programa
@@ -56,6 +60,10 @@ void setup() {
   Serial.println();
   Serial.println();
 
+for(int i=0;i<sizeArrayParams;i++){
+  params[i]=paramsBuffer;
+  Serial.println(params[i]);
+}
   // Comienza la comunicacion Ethernet
   Serial.print(F("Iniciando ethernet..."));
   if(!Ethernet.begin(mac)) Serial.println(F("Fallo"));
