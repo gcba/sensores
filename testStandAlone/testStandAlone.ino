@@ -20,7 +20,7 @@ byte Offset=0;
 DHT dht(DHTPIN, DHTTYPE); //Se inicia una variable que será usada por Arduino para comunicarse con el sensor
 unsigned long time;
 // Variables Luz
-int lightPin = 5;  //Pin de la foto-resistencia
+int lightPin = A3;  //Pin de la foto-resistencia
 int light=0;     //Variable light
 int light0=0;
 float Res0=10.0;
@@ -30,16 +30,7 @@ float Res0=10.0;
 int electret = 0;
 int lect = 0;
 int noise = 0;   
-int threshold=760;
-
-
-
-/* pageName es el parametro donde se pasa el metodo que acompaña a la URL del servidor, contiente:
-user:       user1
-pass :      p4RmoU7q
-timestamp:  year()-month()-day()%20hour():minute():second()
-El parametro timestamp toma los valores del sistema, de esa forma nunca se repite una fecha y horario.
-*/
+int threshold=450; //Valor medidio para el amplificador LM741
 
 
 //=======================================================
@@ -48,8 +39,6 @@ El parametro timestamp toma los valores del sistema, de esa forma nunca se repit
 void setup() {
   Serial.begin(9600);  // Comienza comunicacion serial
   dht.begin(); //Se inicia el sensor
-
-
 }
 
 
@@ -79,10 +68,4 @@ void loop()
     Serial.print("Light:");
     Serial.println(light);
     delay(2000);
-    
-    
 }
-
-
-
-  
