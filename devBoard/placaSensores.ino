@@ -23,14 +23,15 @@ unsigned long time;
 // Variables Luz
 int lightPin = 5;  //Pin de la foto-resistencia
 int light=0;     //Variable light
-int min = 0;       //valor mínimo que da la foto-resistencia
-int max = 1000;       //valor máximo que da la foto-resistencia
+int light0=0;
+float Res0=10.0;
+//int min = 0;       //valor mínimo que da la foto-resistencia
+//int max = 1000;       //valor máximo que da la foto-resistencia
 // Variables ruido
 int electret = 0;
+int lect = 0;
 int noise = 0;   
-int sensorMax = 0;
-int sensorMin = 1023;
-int threshold;
+int threshold=760;
 
 // Direccion MAC para conexion DHCP
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
@@ -42,12 +43,12 @@ char serverName[] = "sensores.hml.gcba.gob.ar";
 int serverPort = 80;
 
 /* pageName es el parametro donde se pasa el metodo que acompaña a la URL del servidor, contiente:
-user:       qwerty
-pass :      qwerty
+user:       user1
+pass :      p4RmoU7q
 timestamp:  year()-month()-day()%20hour():minute():second()
 El parametro timestamp toma los valores del sistema, de esa forma nunca se repite una fecha y horario.
 */
-char pageName[] = "/api/data/create?user=qwerty&pass=qwerty&timestamp=year()-month()-day()%20hour():minute():second()";
+char pageName[] = "/api/data/create?user=user1&pass=p4RmoU7q&timestamp=year()-month()-day()%20hour():minute():second()";
 
 // Cliente ethernet
 EthernetClient client;
@@ -64,18 +65,9 @@ char params4[64];
 void setup() {
   Serial.begin(9600);  // Comienza comunicacion serial
   dht.begin(); //Se inicia el sensor
-  Serial.println("LAB GCBA - Soft para lectura de datos de pluviometro");
+  Serial.println("LAB GCBA");
   Serial.println();
   Serial.println();
-  
-  //Calibro Electret
-  while (millis() < 3000) {
-    threshold = analogRead(electret);
-    if (threshold > sensorMax) {
-      sensorMax = threshold;
-    }
-  }
-  threshold = sensorMax;
 
   // Comienza la comunicacion Ethernet
   Serial.print(F("Starting ethernet..."));
@@ -93,16 +85,16 @@ void setup() {
 void loop()
 {
     //Temperatura
-    int temp = dht.readTemperature();
+    int temp = dht.readTemperature()-6;
     //Humedad
-    int hum = dht.readHumidity();
+    int hum = dht.readHumidity()+7;
     //Ruido
-    noise = analogRead(electret);    
-    if ((noise >= threshold)) {
-      Serial.println(noise-threshold);}    
+    int lect = analogRead(electret);    
+    noise = lect-threshold;
     //Luz
-    int light = analogRead(lightPin);
-    light = map(light, min, max, 0, 255);
+    light0 = analogRead(lightPin);   // Read the analogue pin
+    float Vout0=light0*0.0048828125;      // calculate the voltage
+    light=500/(Res0*((5-Vout0)/Vout0));
     
     // Los parametros deben estarl encondeados para la URL.
     sprintf(params,"id=62&data=%i&datatype=temp",temp);
