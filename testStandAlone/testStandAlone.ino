@@ -59,13 +59,14 @@ void loop()
     float Vout0=light0*0.0048828125;      // calculate the voltage
     light=500/(Res0*((5-Vout0)/Vout0));
     
-    Serial.print("Temp: ");
-    Serial.println(temp);
-    Serial.print("Hum: ");
-    Serial.println(hum);
-    Serial.print("Noise: ");
-    Serial.println(noise);
-    Serial.print("Light:");
-    Serial.println(light);
-    delay(2000);
+   Serial.print(temp, DEC);
+  Serial.print(",");
+  Serial.print(hum, DEC);
+  Serial.print(",");
+  Serial.print(noise, DEC);
+  Serial.print(",");
+  Serial.print(light, DEC);
+  Serial.print(",");
+  Serial.println();
+  delay(50);
 }
