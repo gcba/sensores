@@ -13,19 +13,21 @@
 #include <SPI.h>
 #include "DHT.h" //cargamos la librería DHT
 
-// Variables
+// Offset
 byte Offset = 0;
+
+// Variables DHT22
 #define DHTPIN 2 //Seleccionamos el pin en el que se //conectará el sensor
 #define DHTTYPE DHT22 //Se selecciona el DHT11 (hay //otros DHT)
 DHT dht(DHTPIN, DHTTYPE); //Se inicia una variable que será usada por Arduino para comunicarse con el sensor
 unsigned long time;
+
 // Variables Luz
 int lightPin = A3;  //Pin de la foto-resistencia
 int light = 0;   //Variable light
 int light0 = 0;
-float Res0 = 10.0;
-//int min = 0;       //valor mínimo que da la foto-resistencia
-//int max = 1000;       //valor máximo que da la foto-resistencia
+float Res0 = 0.4;
+
 // Variables ruido
 int electret = 0;
 int lect = 0;
@@ -47,10 +49,11 @@ void setup() {
 //=======================================================
 void loop()
 {
+  delay(2000);
   //Temperatura
-  int temp = dht.readTemperature() - 6;
+  int temp = dht.readTemperature() - 4.5;
   //Humedad
-  int hum = dht.readHumidity() + 7;
+  int hum = dht.readHumidity() + 11;
   //Ruido
   int lect = analogRead(electret);
   noise = lect - threshold;
@@ -59,9 +62,9 @@ void loop()
   float Vout0 = light0 * 0.0048828125;  // calculate the voltage
   light = 500 / (Res0 * ((5 - Vout0) / Vout0));
 
-  Serial.print(temp, DEC);
+  Serial.print(temp,DEC);
   Serial.print(",");
-  Serial.print(hum, DEC);
+  Serial.print(hum,DEC);
   Serial.print(",");
   Serial.print(noise, DEC);
   Serial.print(",");
