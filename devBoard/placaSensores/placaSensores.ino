@@ -31,7 +31,7 @@ float Res0=10.0;
 int electret = 0;
 int lect = 0;
 int noise = 0;   
-int threshold=760;
+int threshold=450;
 
 // Direccion MAC para conexion DHCP
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
