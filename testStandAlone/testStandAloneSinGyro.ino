@@ -20,7 +20,6 @@ byte Offset = 0;
 #define DHTPIN 2 //Seleccionamos el pin en el que se //conectará el sensor
 #define DHTTYPE DHT22 //Se selecciona el DHT11 (hay //otros DHT)
 DHT dht(DHTPIN, DHTTYPE); //Se inicia una variable que será usada por Arduino para comunicarse con el sensor
-unsigned long time;
 
 // Variables Luz
 int lightPin = A3;  //Pin de la foto-resistencia
@@ -29,7 +28,7 @@ int light0 = 0;
 float Res0 = 0.4;
 
 // Variables ruido
-int electret = 0;
+int electret = A0;
 int lect = 0;
 int noise = 0;
 int threshold = 450; //Valor medidio para el amplificador LM741
@@ -49,18 +48,50 @@ void setup() {
 //=======================================================
 void loop()
 {
-  delay(2000);
+  //delay(2000);
   //Temperatura
-  int temp = dht.readTemperature() - 4.5;
+  int temp = dht.readTemperature() -5;
+  if(temp<0)
+  {
+    temp=0;
+  }
+  else if(temp>40)
+  {
+    temp=40;
+  }
   //Humedad
   int hum = dht.readHumidity() + 11;
+  if(hum<0)
+  {
+    hum=0;
+  }
+  else if(hum>100)
+  {
+    hum=100;
+  }
   //Ruido
   int lect = analogRead(electret);
   noise = lect - threshold;
+  if(noise<40)
+  {
+    noise=40;
+  }
+  else if(noise>120)
+  {
+    noise=120;
+  }
   //Luz
   light0 = analogRead(lightPin);   // Read the analogue pin
   float Vout0 = light0 * 0.0048828125;  // calculate the voltage
   light = 500 / (Res0 * ((5 - Vout0) / Vout0));
+    if(light<0)
+  {
+    light=0;
+  }
+  else if(light>4000)
+  {
+    temp=4000;
+  }
 
   Serial.print(temp,DEC);
   Serial.print(",");
