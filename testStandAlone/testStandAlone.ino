@@ -37,7 +37,7 @@ int threshold = 450; //Valor medidio para el amplificador LM741
 /// Set-Up inicial del programa
 //=======================================================
 void setup() {
-  Serial.begin(9600);  // Comienza comunicacion serial
+  Serial.begin(115200);  // Comienza comunicacion serial
   dht.begin(); //Se inicia el sensor
 }
 
