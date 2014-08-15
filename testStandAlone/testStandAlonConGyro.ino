@@ -224,7 +224,7 @@ void loop()
   }
   else if(noise>maxNoise)
   {
-    noise=mxNoise;
+    noise=maxNoise;
   }
   //Luz
   light0 = analogRead(lightPin);   // Read the analogue pin
