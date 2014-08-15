@@ -50,6 +50,16 @@ double kalAngleX, kalAngleY; // Angulo de Kalman
 uint32_t timer;
 uint8_t i2cData[14]; // Buffer I2C
 
+// Rangos
+int minTemp = 0;
+int maxTemp = 40;
+int minHum = 0;
+int maxHum = 100;
+int minNoise = 40;
+int maxNoise = 120;
+int minLight = 0;
+int maxLight = 4000;
+
 
 //=======================================================
 /// Set-Up inicial del programa
