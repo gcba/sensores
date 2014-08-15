@@ -1,0 +1,10 @@
+Diseño
+========
+
+https://www.sparkfun.com/datasheets/BreakoutBoards/Amplified-Mic-Electret-v14.pdf
+
+dB: 20 x log(Reading/Reference)
+
+Base para el diseño: https://www.sparkfun.com/products/9964
+
+Utilizamos AO LM741 en lugar del LM344 debido a mejor prestacion (hfe mejor - menor corriente Ic)
