@@ -33,6 +33,16 @@ int lect = 0;
 int noise = 0;
 int threshold = 450; //Valor medidio para el amplificador LM741
 
+// Rangos
+int minTemp = 0;
+int maxTemp = 40;
+int minHum = 0;
+int maxHum = 100;
+int minNoise = 40;
+int maxNoise = 120;
+int minLight = 0;
+int maxLight = 4000;
+
 
 //=======================================================
 /// Set-Up inicial del programa
@@ -48,49 +58,48 @@ void setup() {
 //=======================================================
 void loop()
 {
-  //delay(2000);
   //Temperatura
   int temp = dht.readTemperature() -5;
-  if(temp<0)
+  if(temp<minTemp)
   {
-    temp=0;
+    temp=minTemp;
   }
-  else if(temp>40)
+  else if(temp>maxTemp)
   {
-    temp=40;
+    temp=maxTemp;
   }
   //Humedad
   int hum = dht.readHumidity() + 11;
-  if(hum<0)
+  if(hum<minHum)
   {
-    hum=0;
+    hum=minHum;
   }
-  else if(hum>100)
+  else if(hum>maxHum)
   {
-    hum=100;
+    hum=maxHum;
   }
   //Ruido
   int lect = analogRead(electret);
   noise = lect - threshold;
-  if(noise<40)
+  if(noise<minNoise)
   {
-    noise=40;
+    noise=minNoise;
   }
-  else if(noise>120)
+  else if(noise>maxNoise)
   {
-    noise=120;
+    noise=mxNoise;
   }
   //Luz
   light0 = analogRead(lightPin);   // Read the analogue pin
   float Vout0 = light0 * 0.0048828125;  // calculate the voltage
   light = 500 / (Res0 * ((5 - Vout0) / Vout0));
-    if(light<0)
+    if(light<minLight)
   {
-    light=0;
+    light=minLight;
   }
-  else if(light>4000)
+  else if(light>maxLight)
   {
-    temp=4000;
+    temp=maxLight;
   }
 
   Serial.print(temp,DEC);
