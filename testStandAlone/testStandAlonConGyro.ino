@@ -5,7 +5,8 @@
    Dispositivo:     w5100/w5200
    Version:         2.1.0
    Fecha:           Agosto 2014
-   Funcion:         Postear 4 señales de datos: temperatura y humedad (DHT11), ruido (electret) y luz (LDR)
+   Funcion:         Envio serial de 13 datos: temperatura y humedad (DHT11), ruido (electret) y luz (LDR), accX, accY,
+                    accZ, gyrX, gyrY, gyrZ, roll, pitch y temperatura.
    Direccion General de Innovacion y Gobierno Abierto
 */
 
