@@ -12,95 +12,110 @@
 #include <SPI.h>
 #include <UIPEthernet.h>
 
+// Direccion MAC para conexion DHCP
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+
 // URL del servidor
-char dataServer[] = "sensores.hml.gcba.gob.ar";
+char serverName[] = "sensores.hml.gcba.gob.ar";
+
+// Puerto del servidor
+int serverPort = 80;
+
+/* pageName es el parametro donde se pasa el metodo que acompaña a la URL del servidor, contiente:
+user:       ----------
+pass :      ----------
+timestamp:  year()-month()-day()%20hour():minute():second()
+El parametro timestamp toma los valores del sistema, de esa forma nunca se repite una fecha y horario.
+*/
 char pageName[] = "/api/data/create?user=----------&pass=----------&timestamp=year()-month()-day()%20hour():minute():second()";
 
-// Parametros de actualizacion
-#define UPDATE_TIME 60000 // INtervalo de 1 minuto para mandar datos al servidor.
-#define TIMEOUT 1000 // Timeout de 1 segundo
-
-// Conexion DHCP
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xAE, 0xCD };
+// Cliente ethernet
 EthernetClient client;
 
-// Timers
-unsigned long timer1 = 0;
-unsigned long timer2 = 0;
-int failedResponse = 0;
+// Params debe ser lo suficientemente grande para contener a la variable
+char params[64];
 
 //=======================================================
 /// Set-Up inicial del programa
 //=======================================================
-void setup()
-{
-  //Initiallize the serial port.
-  Serial.begin(9600);
-  Serial.println("LAB GCBA - Cliente de datos para sensores");
-  
+void setup() {
+  Serial.begin(9600);  // Comienza comunicacion serial
+  Serial.println("LAB GCBA - Soft para lectura de datos de pluviometro");
+  Serial.println();
+  Serial.println();
   // Comienza la comunicacion Ethernet
   Serial.print(F("Iniciando ethernet..."));
   if(!Ethernet.begin(mac)) Serial.println(F("Fallo"));
   else Serial.println(Ethernet.localIP());
-  Serial.print("LocalIP:\t\t");
-  Serial.println(Ethernet.localIP());
-  Serial.print("SubnetMask:\t\t");
-  Serial.println(Ethernet.subnetMask());
-  Serial.print("GatewayIP:\t\t");
-  Serial.println(Ethernet.gatewayIP());
-  Serial.print("dnsServerIP:\t\t");
-  Serial.println(Ethernet.dnsServerIP());
   delay(2000);
-  Serial.println(F("Conexion establecida."));
-}
+  Serial.println(F("Listo"));}
 
 //=======================================================
 // Bucle principal
 //=======================================================
-void loop()
-{
-  // Actualizar el dato cada 60 segudos
-  if(millis() > timer1 + UPDATE_TIME)
-  {
-    timer1 = millis();  // Actualizo el timer1 con el tiempo actual en milisegundos.
-    sendTodataServer(); // Envio la data al servidor.
-  }
-}
+void loop(){
+    int variable = 10;
+    sprintf(params,"id=ID_SENSOR&data=%i&datatype=NOMBRE_TIPO_DATO",variable);
+    if(!postPage(serverName,serverPort,pageName,params)) Serial.print(F("Fail "));
+    else Serial.print(F("Pass "));}
 
-//=======================================================
-// Envio de datos
-//=======================================================
-void sendTodataServer()
-{
-  // Establezco una coneccion TCP con el servidor donde esta alojada la base de datos de sensores.
-  if (client.connect(dataServer, 80))
+/* Funcion:  postPage
+
+Recibe:    char domainBuffer
+           int thisPort
+           char page
+           char thisData
+         
+Devuelve:  byte
+
+Es la funcion encargada de realizar el post.
+
+*/
+
+byte postPage(char* domainBuffer,int thisPort,char* page,char* thisData){
+  int inChar;
+  char outBuf[64]; //El buffer debe ser de 64*n, donde n es la cantidad de señales a enviar
+  // La funcion se conecta al servidor a traver de la URL domainBuffer y del puerto thisPort
+  Serial.print(F("Conectando..."));
+  if(client.connect(domainBuffer,thisPort))
   {
-    // Si el cliente esta conectado al servidor, envio los datos.
-    if(client.connected())
+    Serial.println(F("Conectado"));
+    // Enviar el encabezado del post
+    sprintf(outBuf,"POST %s HTTP/1.1",page);
+    client.println(outBuf);
+    sprintf(outBuf,"Host: %s",domainBuffer);
+    client.println(outBuf);
+    client.println(F("Connection: close\r\nContent-Type: application/x-www-form-urlencoded"));
+    sprintf(outBuf,"Content-Length: %u\r\n",strlen(thisData));
+    client.println(outBuf);
+
+    // Envia el cuerpo del ost (las variables)
+    client.print(thisData);
+  } 
+  else
+  {
+    Serial.println(F("Fallo"));
+    return 0;
+  }
+  int connectLoop = 0;
+  while(client.connected())
+  {
+    while(client.available())
     {
-      Serial.println("Enviando datos...\n");
-      client.print("POST %s HTTP/1.1",pageName);
-      client.println("Host: sensores.hml.gcba.gob.ar");
-      client.println("Content-Type: application/x-www-form-urlencoded");
-      client.println("Connection: close");
-      client.print("Content-Length: ");
-      client.print("&id=");
-      client.print("ID_SENSOR");
-      client.print("&data=");
-      client.print("VARIABLE");
-      client.print("&datatype=");
-      client.print("TIPO_DE_DATO");
-      delay(1000);
-      timer2 = millis();
-      while((client.available() == 0)&&(millis() < timer2 + TIMEOUT)); // Espero hasta que el servidor responda o hasta que timer2 expire.
-      // Mientras existan bytes entrantes del servidor, mostrarlos.
-      while(client.available() > 0)
-      {
-        char inData = client.read();
-        Serial.print(inData);
-      }
-      Serial.println("\n");
-      client.stop(); // Desconecto el cliente del servidor
+      inChar = client.read();
+      Serial.write(inChar);
+      connectLoop = 0;
+    }
+    delay(1);
+    connectLoop++;
+    if(connectLoop > 10000)
+    {
+      Serial.println();
+      Serial.println(F("Timeout"));
+      client.stop();
     }
   }
-}
+  Serial.println();
+  Serial.println(F("Desconectando..."));
+  client.stop();
+  return 1;}
