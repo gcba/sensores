@@ -35,20 +35,15 @@ pass :      p4RmoU7q
 timestamp:  year()-month()-day()%20hour():minute():second()
 El parametro timestamp toma los valores del sistema, de esa forma nunca se repite una fecha y horario.
 */
-char pageName[] = "/api/data/create?user=user1&pass=p4RmoU7q&timestamp=year()-month()-day()%20hour():minute():second()";
+char pageName[] = "/api/data/create?user=---&pass=---&timestamp=year()-month()-day()%20hour():minute():second()";
 
 // Cliente ethernet
 EthernetClient client;
 
 // Params debe ser lo suficientemente grande para contener todas las variables
 const int sizeArrayParams=3;
-const int paramsBuffer=64;
+const int paramsBuffer=32;
 char params[sizeArrayParams];
-
-//char params[64];
-//char params2[64];
-//char params3[64];
-//char params4[64];
 
 //=======================================================
 /// Set-Up inicial del programa
