@@ -1,5 +1,4 @@
 /*
-   Cliente ethernet para postear datos a la API de SENSORES GCBA
    Compilado en:    IDE v1.0.5
    Placa:           Arduino Uno R3
    Version:         2.1.0
