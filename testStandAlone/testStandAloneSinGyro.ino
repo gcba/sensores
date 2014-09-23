@@ -1,4 +1,5 @@
 /*
+   Autor:           David Alejandro Trejo Pizzo
    Compilado en:    IDE v1.0.5
    Placa:           Arduino Uno R3
    Version:         2.1.0
