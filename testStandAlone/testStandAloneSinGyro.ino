@@ -1,10 +1,10 @@
 /*
-   Autor:           David Alejandro Trejo Pizzo
    Compilado en:    IDE v1.0.5
    Placa:           Arduino Uno R3
    Version:         2.1.0
    Fecha:           Agosto 2014
    Funcion:         Leer 4 señales de datos: temperatura y humedad (DHT11), ruido (electret) y luz (LDR)
+   Autor:           David Alejandro Trejo Pizzo
    Direccion General de Innovacion y Gobierno Abierto
 */
 
